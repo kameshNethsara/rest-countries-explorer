@@ -2,6 +2,7 @@ package com.kns.restcountriesexplorerbe.service.impl;
 
 import com.kns.restcountriesexplorerbe.dto.CountryDTO;
 import com.kns.restcountriesexplorerbe.service.CountryService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -35,7 +36,7 @@ public class CountryServiceImpl implements CountryService {
     @Scheduled(fixedRate = 600000)
     @Override
     public void fetchAndCacheCountries() {
-        String url = "https://restcountries.com/v3.1/all";
+        String url =  "https://restcountries.com/v3.1/all?fields=name,capital,region,population,flags";
 
         try {
             List<Map<String, Object>> response = restTemplate.getForObject(url, List.class);
@@ -76,5 +77,10 @@ public class CountryServiceImpl implements CountryService {
         } catch (Exception e) {
             System.err.println("Error fetching countries: " + e.getMessage());
         }
+    }
+
+    @PostConstruct
+    public void init() {
+        fetchAndCacheCountries();
     }
 }
